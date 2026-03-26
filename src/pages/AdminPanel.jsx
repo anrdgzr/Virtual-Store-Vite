@@ -31,7 +31,6 @@ const AdminPanel = () => {
     const fetchOrdenes = async () => {
         try {
             const res = await api.get("/api/orders");
-            console.log("Ordenes:", res.data);
             return res.data;
         } catch (err) {
             console.error("Error obteniendo órdenes:", err);

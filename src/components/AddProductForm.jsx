@@ -15,6 +15,7 @@ import {
   Select,
   InputLabel,
   MenuItem,
+  CircularProgress,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -37,6 +38,7 @@ const AddProductForm = () => {
     const [isStar, setIsStar] = useState(false);
     const [marca, setMarca] = useState("");
     const [storedBrands, setStoredBrands] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const theme = useTheme();
     const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
@@ -70,6 +72,7 @@ const AddProductForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
 
         try {
             const formData = new FormData();
@@ -111,13 +114,14 @@ const AddProductForm = () => {
             setSabores([{ nombre: "", cantidad: 0 }])
         } catch (error) {
             console.error("Error creando producto", error);
+        } finally {
+            setLoading(false);
         }
     };
 
     const fetchBrands = async () => {
         try {
             const res = await api.get("/api/brands");
-            console.log("brands res: ", res)
             setStoredBrands(res.data);
         } catch (error) {
             console.error(error);
@@ -312,9 +316,14 @@ const AddProductForm = () => {
                                 variant="contained"
                                 color="primary"
                                 fullWidth
-                                sx={{ mt: 2 }}
+                                disabled={loading}
+                                sx={{ mt: 2, position: "relative" }}
                             >
-                                Subir Producto
+                                {loading ? (
+                                    <CircularProgress size={24} sx={{ color: "#fff" }} />
+                                ) : (
+                                    "Subir Producto"
+                                )}
                             </Button>
                         </Grid>
                     </Stack>

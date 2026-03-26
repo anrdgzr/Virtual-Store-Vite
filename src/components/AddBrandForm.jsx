@@ -12,6 +12,7 @@ import {
   useTheme,
   Tooltip,
   InputAdornment,
+  CircularProgress,
 } from "@mui/material";
 import { api } from "../network/api";
 import StarIcon from '@mui/icons-material/Star';
@@ -24,6 +25,7 @@ import { notify } from "../utils/notify";
 const AddBrandForm = () => {
     const theme = useTheme();
     const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
+    const [loading, setLoading] = useState(false);
 
     const [marcas2Add, setMarcas2Add] = useState([{ marca: "", imagenes: [], star: false, color: "#000000" }]);
 
@@ -59,6 +61,7 @@ const AddBrandForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
 
         try {
             const formData = new FormData();
@@ -87,6 +90,8 @@ const AddBrandForm = () => {
         } catch (err) {
             console.error("Error subiendo marcas:", err);
             notify.error("Error subiendo marcas");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -230,8 +235,12 @@ const AddBrandForm = () => {
                                 </IconButton>
                             </Tooltip>
                         </Grid>
-                        <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
-                        Subir Marca(s)
+                        <Button type="submit" variant="contained" color="primary" fullWidth disabled={loading} sx={{ mt: 2, position: "relative" }}>
+                            {loading ? (
+                                <CircularProgress size={24} sx={{ color: "#fff" }} />
+                            ) : (
+                                "Subir Marca(s)"
+                            )}
                         </Button>
                     </Stack>
                 </form>

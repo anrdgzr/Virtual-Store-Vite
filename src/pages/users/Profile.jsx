@@ -39,13 +39,10 @@ const Profile = () => {
             try {
                 const profileRes = await api.get("/api/user/profile")
 
-                console.log("PROFILE: ", profileRes)
-
                 setProfile(profileRes.data);
 
                 const ordersRes = await api.get("/api/user/orders")
 
-                console.log("RES ORDER: ", ordersRes)
                 setOrders(ordersRes.data);
 
             } catch (error) {

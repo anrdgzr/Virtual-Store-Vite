@@ -59,7 +59,6 @@ const Catalogo = () => {
 
     const fetchProducts = async () => {
         const res = await api.get("/api/products")
-        console.log("RES:" , res);
         setProductos(res.data);
     };
 

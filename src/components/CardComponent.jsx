@@ -17,7 +17,6 @@ const CardComponent = ({
     handleToggleFavorite,
 }) => {
     const isLargetitle = producto.nombre.length > 13;
-    console.log("FAVS: ", favorites)
     return(
         <Card
             sx={{

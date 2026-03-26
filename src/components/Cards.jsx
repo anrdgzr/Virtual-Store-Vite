@@ -11,7 +11,6 @@ const Cards = ({ productos, token, favorites, handleToggleFavorite, section = "c
     const handleOpen = (producto) => {
         setProductoSeleccionado(producto);
         setOpen(true);
-        console.log("HIJAHSH")
     };
 
     const handleClose = () => {

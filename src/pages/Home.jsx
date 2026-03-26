@@ -19,14 +19,12 @@ const Home = () => {
   const fetchProducts = async () => {
     const res = await api.get("/api/products");
     const filteredProducts = res.data.filter(product => product.star === true);
-    console.log("RES PRODUCTS: ", res.data, filteredProducts);
     setProductosFav(filteredProducts);
   };
 
   const fetchBrands = async () => {
     try {
       const res = await api.get("/api/brands")
-      console.log("BRANDS RES: ", res);
       setBrands(res.data);
     } catch (e) {
       console.error("Error Front", e);

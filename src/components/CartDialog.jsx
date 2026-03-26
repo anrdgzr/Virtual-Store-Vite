@@ -42,17 +42,12 @@ const CartDialog = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-    console.log("CART DATA: ", cartData);
-
-    console.log("OPEN CART: ", open);
-
     const handleClose = () => {
         setGenValue("open", false);
     };
 
     const handleCheckout = () => {
         setGenValue("open", false);
-        // localStorage.setItem("cart-temp", JSON.stringify(cartData));
         navigate("/checkout");
     };
 
@@ -91,7 +86,6 @@ const CartDialog = () => {
                 ) : (
                     <>
                         <List disablePadding>
-                            {console.log("CART: ", cartData)}
                             {cartData.map((item) => (
                                 <Card
                                     key={item.id}

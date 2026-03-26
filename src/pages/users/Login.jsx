@@ -13,15 +13,12 @@ const Login = () => {
     const [loading, setLoading] = useState(false);    
     const navigate = useNavigate();
 
-    console.log("params: ", { email, password });
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
 
         try {
             const res = await api.post("/api/auth/login", { email, password });
-            console.log("RES LOGIN: ", res);
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("role", JSON.stringify(res.data.role));
             notify.success("¡Bienvenido de vuelta!");

@@ -12,7 +12,6 @@ const Inventory = ({ isExpanded }) => {
     useEffect(() => {
         const fetchInventario = async () => {
             try {
-                console.log("HI")
                 const res = await api.get("/api/products");
                 
                 const stockItems = [];

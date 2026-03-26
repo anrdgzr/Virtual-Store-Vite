@@ -46,6 +46,15 @@ const AdminProductCard = ({ producto, refreshProducts }) => {
         setExistingImages(existingImages.filter((_, idx) => idx !== indexToRemove));
     };
 
+    const handleAddNewImages = (e) => {
+        const files = Array.from(e.target.files);
+        setNewImages((prevImages) => [...prevImages, ...files]);
+    };
+
+    const handleRemoveNewImage = (indexToRemove) => {
+        setNewImages(newImages.filter((_, idx) => idx !== indexToRemove));
+    };
+
     const handleSaveEdit = async () => {
         setLoading(true);
         try {
@@ -186,6 +195,24 @@ const AdminProductCard = ({ producto, refreshProducts }) => {
                                 </Box>
                             ))}
                         </Stack>
+
+                        {newImages.length > 0 && (
+                            <>
+                                <Typography fontWeight="900" borderBottom="2px solid #00E5FF" pb={1} mt={2}>
+                                    NUEVAS IMÁGENES AÑADIDAS
+                                </Typography>
+                                <Stack direction="row" spacing={2} overflow="auto" pb={1}>
+                                    {newImages.map((file, idx) => (
+                                        <Box key={`new-${idx}`} position="relative" border="3px solid #00E5FF" borderRadius="8px" p={0.5} sx={{ flexShrink: 0, bgcolor: "#f0ffff" }}>
+                                            <img src={URL.createObjectURL(file)} alt="new preview" width={80} height={80} style={{ objectFit: "contain" }} />
+                                            <IconButton size="small" sx={{ position: "absolute", top: -10, right: -10, bgcolor: "#FF3366", color: "#fff", "&:hover":{bgcolor: "#000"} }} onClick={() => handleRemoveNewImage(idx)}>
+                                                <DeleteForeverIcon fontSize="small" />
+                                            </IconButton>
+                                        </Box>
+                                    ))}
+                                </Stack>
+                            </>
+                        )}
 
                         <Button variant="contained" component="label" startIcon={<PhotoLibraryIcon />} sx={{ bgcolor: "#000", color: "#fff", fontWeight: "bold" }}>
                             SUBIR NUEVAS IMÁGENES

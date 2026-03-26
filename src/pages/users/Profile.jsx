@@ -3,6 +3,7 @@ import { Box, Typography, Stack, Grid, Card, CardContent, Button, Chip, Divider,
 import { useNavigate } from "react-router-dom";
 import { 
     useCartStoreAddToCart,
+    useCartStoreData,
     useCartStoreSetGenValue 
 } from "../../stores/useCartStore";
 import { api } from "../../network/api";
@@ -23,6 +24,7 @@ const Profile = () => {
 
     const setCartOpen = useCartStoreSetGenValue(); 
     const addToCart = useCartStoreAddToCart();
+    const cart = useCartStoreData();
 
     const carouselRef = useRef(null);
 
@@ -88,29 +90,67 @@ const Profile = () => {
             return;
         }
 
-        console.log("order", order)
+        let huboAjustesDeStock = false;
+        const itemsParaCarrito = [];
 
-        const itemsParaCarrito = order.productos.map((itemDB) => ({
-            id: itemDB.producto._id ? itemDB.producto._id : itemDB.producto.id,
-            nombre: itemDB.producto.nombre,
-            imagenes: itemDB.producto.imagenes,
-            marca: itemDB.producto.marca,
-            // precio: itemDB.precioUnitario,
-            precio: itemDB.producto.precio,
-            sabores: itemDB.sabores,
-            // totalCantidad: itemDB.cantidad,
-            // subtotal: itemDB.subtotal,
-        }));
+        productosValidos.forEach((itemDB) => {
+            const saboresValidos = [];
+            const productId = itemDB.producto._id || itemDB.producto.id;
+
+            const itemEnCarrito = cart.find(item => item.id === productId);
+
+            itemDB.sabores.forEach(saborDeseado => {
+                const saborVivo = itemDB.producto.sabores.find(s => s.nombre === saborDeseado.nombre);
+                const stockDisponible = saborVivo ? Number(saborVivo.cantidad) : 0;
+
+                const saborEnCarrito = itemEnCarrito?.sabores.find(s => s.nombre === saborDeseado.nombre);
+                const cantidadYaEnCarrito = saborEnCarrito ? Number(saborEnCarrito.cantidad) : 0;
+
+                const capacidadRestante = Math.max(0, stockDisponible - cantidadYaEnCarrito);
+
+                if (capacidadRestante > 0) {
+                    const cantidadAñadir = Math.min(Number(saborDeseado.cantidad), capacidadRestante);
+                    
+                    if (cantidadAñadir < Number(saborDeseado.cantidad)) {
+                        huboAjustesDeStock = true;
+                    }
+
+                    saboresValidos.push({
+                        nombre: saborDeseado.nombre,
+                        cantidad: cantidadAñadir
+                    });
+                } else {
+                    huboAjustesDeStock = true; 
+                }
+            });
+
+            if (saboresValidos.length > 0) {
+                itemsParaCarrito.push({
+                    id: productId,
+                    nombre: itemDB.producto.nombre,
+                    imagenes: itemDB.producto.imagenes,
+                    marca: itemDB.producto.marca,
+                    precio: itemDB.producto.precio,
+                    sabores: saboresValidos,
+                });
+            }
+        });
+
+        if (itemsParaCarrito.length === 0) {
+            notify.error("Ya tienes el límite de stock de estos productos en tu carrito, o están agotados.");
+            return;
+        }
 
         itemsParaCarrito.forEach(item => {
             addToCart(item, item.sabores); 
         });
 
-        if (productosValidos.length < order.productos.length) {
-            notify.warning("Se agregaron los productos disponibles actualizados.");
+        if (huboAjustesDeStock || productosValidos.length < order.productos.length) {
+            notify.warning("Algunos sabores fueron ajustados según el stock y tu carrito actual.");
         } else {
-            notify.success("¡Productos agregados al carrito!");
+            notify.success("¡Pedido agregado al carrito!");
         }
+        
         setCartOpen("open", true);
     };
 

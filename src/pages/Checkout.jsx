@@ -12,6 +12,9 @@ import MapDelivery from "../components/MapDelivery";
 import { useNavigate } from "react-router-dom";
 import { notify } from "../utils/notify";
 import CustomTextField from "../components/CustomTextField";
+import TextFieldCustom from "../components/TextFieldCustom";
+
+const ADMIN_PHONE = import.meta.env.VITE_ADMIN_PHONE
 
 const Checkout = () => {
     const cartData = useCartStoreData();
@@ -27,6 +30,7 @@ const Checkout = () => {
     const [tipoEnvio, setTipoEnvio] = useState('app');
     const [ubicacionCliente, setUbicacionCliente] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [ordenExitosa, setOrdenExitosa] = useState(null);
 
     const total = useCartStoreGetTotal();
     
@@ -78,10 +82,36 @@ const Checkout = () => {
                 tipoEnvio,
             });
 
-            notify.success("Compra realizada con éxito");
-            navigate("/")
-
             clearCart();
+            notify.success("Compra realizada con éxito");
+
+            const orderId = response.data.orden._id.slice(-6).toUpperCase();
+            const adminPhone = ADMIN_PHONE;
+            
+            let wpText = `*¡Hola! Acabo de realizar el pedido #${orderId}*\n\n`;
+            wpText += `*A nombre de:* ${cliente.nombre}\n`;
+            wpText += `*Envío:* ${tipoEnvio} | *Pago:* ${metodoPago}\n\n`;
+            wpText += `*Mis Productos:*\n`;
+            
+            cartData.forEach(item => {
+                wpText += ` - ${item.nombre}\n`;
+                item.sabores.forEach(s => {
+                    wpText += `   -> ${s.cantidad}x ${s.nombre}\n`;
+                });
+            });
+
+            wpText += `\n*Total:* $${response.data.orden.total.toFixed(2)} MXN\n`;
+            wpText += `\n¿Me podrían confirmar la recepción?`;
+
+            
+            const encodedText = encodeURIComponent(wpText);
+            const waLink = `https://wa.me/${adminPhone}?text=${encodedText}`;
+            
+            setOrdenExitosa({
+                id: orderId,
+                link: waLink
+            });
+            
         } catch (err) {
             console.error(err);
             notify.error("Error al procesar la compra");
@@ -89,6 +119,52 @@ const Checkout = () => {
             setLoading(false);
         }
     };
+
+    if (ordenExitosa) {
+        return (
+            <Box sx={{ minHeight: "80vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", p: 3, textAlign: "center" }}>
+                <Typography variant="h2" fontFamily="Caprasimo" color="#D6FF00" sx={{ textShadow: "2px 2px 0px #000", mb: 2 }}>
+                    ¡PEDIDO CONFIRMADO!
+                </Typography>
+                
+                <Typography variant="h6" fontWeight="bold" mb={4}>
+                    Tu número de orden es: #{ordenExitosa.id}
+                </Typography>
+                
+                <Typography color="text.secondary" mb={4} maxWidth="400px">
+                    Te hemos enviado un recibo a tu correo. Para agilizar tu entrega, envíanos un mensaje por WhatsApp.
+                </Typography>
+
+                <Button 
+                    variant="contained" 
+                    href={ordenExitosa.link} 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{ 
+                        bgcolor: "#25D366",
+                        color: "#fff", 
+                        fontWeight: "900", 
+                        fontSize: "1.2rem",
+                        py: 2, 
+                        px: 4,
+                        border: "4px solid #000",
+                        borderRadius: "12px",
+                        boxShadow: "6px 6px 0px #000",
+                        "&:hover": { bgcolor: "#1ebe57", transform: "translate(-2px, -2px)", boxShadow: "8px 8px 0px #000" }
+                    }}
+                >
+                    CONFIRMAR POR WHATSAPP
+                </Button>
+
+                <Button 
+                    onClick={() => navigate("/")}
+                    sx={{ mt: 4, color: "#000", fontWeight: "bold", textDecoration: "underline" }}
+                >
+                    Volver a la tienda
+                </Button>
+            </Box>
+        );
+    }
 
     if (cartData.length === 0) {
         return (
@@ -262,78 +338,41 @@ const Checkout = () => {
                     <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
                     Datos del Cliente
                     </Typography>
-
-                    <TextField
+                
+                    <TextFieldCustom
                         label="Nombre Completo"
                         name="nombre"
+                        type="text"
                         value={cliente.nombre}
                         onChange={handleChange}
-                        fullWidth
-                        margin="normal"
-                        sx={{
-                            "& .MuiOutlinedInput-root": {
-                                borderRadius: "8px",
-                                border: "2px solid #000",
-                                backgroundColor: "#f4f5f7",
-                                "& fieldset": { border: "none" },
-                                "&:hover": { backgroundColor: "#fff" },
-                                "&.Mui-focused": { backgroundColor: "#fff", boxShadow: "4px 4px 0px #000" }
-                            }
-                        }}
+                        required
+                        sx={{ mb: 2 }}
                     />
-                    <TextField
+                    <TextFieldCustom
                         label="Teléfono"
                         name="telefono"
+                        type="phone"
                         value={cliente.telefono}
                         onChange={handleChange}
-                        fullWidth
-                        margin="normal"
-                        sx={{
-                            "& .MuiOutlinedInput-root": {
-                                borderRadius: "8px",
-                                border: "2px solid #000",
-                                backgroundColor: "#f4f5f7",
-                                "& fieldset": { border: "none" },
-                                "&:hover": { backgroundColor: "#fff" },
-                                "&.Mui-focused": { backgroundColor: "#fff", boxShadow: "4px 4px 0px #000" }
-                            }
-                        }}
+                        required
+                        sx={{ mb: 2 }}
                     />
-                    <TextField
+                    <TextFieldCustom
                         label="Dirección"
                         name="direccion"
+                        type="text"
                         value={cliente.direccion}
                         onChange={handleChange}
-                        fullWidth
-                        margin="normal"
-                        sx={{
-                            "& .MuiOutlinedInput-root": {
-                                borderRadius: "8px",
-                                border: "2px solid #000",
-                                backgroundColor: "#f4f5f7",
-                                "& fieldset": { border: "none" },
-                                "&:hover": { backgroundColor: "#fff" },
-                                "&.Mui-focused": { backgroundColor: "#fff", boxShadow: "4px 4px 0px #000" }
-                            }
-                        }}
+                        required
+                        sx={{ mb: 2 }}
                     />
-                    <TextField
+                    <TextFieldCustom
                         label="Correo electrónico"
                         name="email"
+                        type="email"
                         value={cliente.email}
                         onChange={handleChange}
-                        fullWidth
-                        margin="normal"
-                        sx={{
-                            "& .MuiOutlinedInput-root": {
-                                borderRadius: "8px",
-                                border: "2px solid #000",
-                                backgroundColor: "#f4f5f7",
-                                "& fieldset": { border: "none" },
-                                "&:hover": { backgroundColor: "#fff" },
-                                "&.Mui-focused": { backgroundColor: "#fff", boxShadow: "4px 4px 0px #000" }
-                            }
-                        }}
+                        required
                     />
                 </CardContent>
             </Card>

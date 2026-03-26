@@ -2,7 +2,7 @@ import { useState } from "react";
 import { TextField, Button, Box, Typography, Paper } from "@mui/material";
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/products";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const LogInForm = ({ onLogin }) => {
     const [email, setEmail] = useState("");
@@ -14,7 +14,7 @@ const LogInForm = ({ onLogin }) => {
         setError("");
 
         try {
-            const res = await axios.post(`${API_URL}/api/auth/login`, { email, password });
+            const res = await api.post(`${API_URL}/api/auth/login`, { email, password });
 
             localStorage.setItem("token", res.data.token);
             onLogin(res.data.user);

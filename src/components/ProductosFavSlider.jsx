@@ -47,20 +47,38 @@ const ProductosFavSlider = ({
 
                 <Swiper
                     modules={[Autoplay]}
-                    slidesPerView={2}
-                    spaceBetween={20}
                     loop={true}
                     autoplay={{
-                        delay: 1,
+                        delay: 2500,
                         disableOnInteraction: false,
                     }}
-                    speed={3000}
+                    speed={800}
+                    breakpoints={{
+                        0: {
+                            slidesPerView: 1.3,
+                            spaceBetween: 20,
+                        },
+                        600: {
+                            slidesPerView: 2.3,
+                            spaceBetween: 30,
+                        },
+                        900: {
+                            slidesPerView: 3.5,
+                            spaceBetween: 40,
+                        }
+                    }}
                     style={{ 
                         paddingTop: "20px",
-                        paddingBottom: "20px",
-                        paddingLeft: "10px", 
-                        paddingRight: "10px" 
+                        paddingBottom: "40px",
+                        paddingLeft: "15px", 
+                        paddingRight: "15px" 
                     }}
+                    // style={{ 
+                    //     paddingTop: "20px",
+                    //     paddingBottom: "20px",
+                    //     paddingLeft: "10px", 
+                    //     paddingRight: "10px" 
+                    // }}
                 >
                     {productos.map((producto) => (
                         <SwiperSlide 

@@ -4,6 +4,7 @@ import { GoogleLogin } from '@react-oauth/google';
 import { api } from "../../network/api";
 import { useNavigate, Link } from "react-router-dom";
 import { notify } from "../../utils/notify";
+import TextFieldCustom from "../../components/TextFieldCustom";
 
 const Register = () => {
     const [nombre, setNombre] = useState("");
@@ -67,17 +68,6 @@ const Register = () => {
         }
     };
 
-    const brutalistInput = {
-        "& .MuiOutlinedInput-root": {
-            borderRadius: "8px",
-            border: "2px solid #000",
-            backgroundColor: "#fff",
-            "& fieldset": { border: "none" },
-            "&.Mui-focused": { boxShadow: "4px 4px 0px #000", transform: "translate(-2px, -2px)" },
-            transition: "all 0.2s"
-        }
-    };
-
     return (
         <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh" p={2}>            
             <Box 
@@ -91,7 +81,7 @@ const Register = () => {
                     boxShadow: "10px 10px 0px #000"
                 }}
             >
-                <Typography variant="h3" fontFamily="Caprasimo" textAlign="center" mb={1} sx={{ textTransform: "uppercase" }}>
+                <Typography variant="h3" fontFamily="Caprasimo" textAlign="center" mb={1} sx={{ textTransform: "uppercase", color: "#20de07", fontWeight: "bold" }}>
                     ÚNETE
                 </Typography>
                 <Typography variant="body1" textAlign="center" color="text.secondary" fontWeight="bold" mb={2}>
@@ -116,43 +106,38 @@ const Register = () => {
 
                 <form onSubmit={handleSubmit}>
                     <Stack spacing={2}>
-                        <TextField
-                            fullWidth
+
+                        <TextFieldCustom
                             label="Nombre Completo"
                             type="text"
                             value={nombre}
                             onChange={(e) => setNombre(e.target.value)}
-                            sx={brutalistInput}
                             required
                         />
-                        <TextField
-                            fullWidth
+                        <TextFieldCustom
                             label="Correo electrónico"
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            sx={brutalistInput}
                             required
                         />
-                        <TextField
-                            fullWidth
+
+                        <TextFieldCustom
                             label="Contraseña"
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            sx={brutalistInput}
                             required
                         />
-                        <TextField
-                            fullWidth
+
+                        <TextFieldCustom
                             label="Confirmar Contraseña"
                             type="password"
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
-                            sx={brutalistInput}
                             required
                         />
-                        
+
                         <Button
                             type="submit"
                             fullWidth
@@ -178,7 +163,7 @@ const Register = () => {
                     </Stack>
                 </form>
 
-                <Typography textAlign="center" mt={3} fontWeight="bold">
+                <Typography textAlign="center" mt={3} fontWeight="bold" color="text.secondary">
                     ¿Ya tienes cuenta?{' '}
                     <Box 
                         component="span" 

@@ -3,6 +3,7 @@ import { Box, Typography, Stack, Button, Chip, Avatar } from "@mui/material";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { api } from "../../network/api";
+import { notify } from "../../utils/notify";
 
 const Inventory = ({ isExpanded }) => {
     const [stock, setStock] = useState([]);

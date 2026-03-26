@@ -94,69 +94,52 @@ const Catalogo = () => {
         const matchSabor = 
             saboresFiltrados.length === 0 ||
             p.sabores.some((saborObj) => saboresFiltrados.includes(saborObj.nombre));
-        return matchMarca && matchSabor;
+        const matchPrecio = p.precio >= precio[0] && p.precio <= precio[1];
+        return matchMarca && matchSabor && matchPrecio;
     });
 
     const marcasFiltradas = [...new Set(productosFiltrados.map((p) => p.marca))];
 
     const SidebarContent = (
-        <Box sx={{ width: { xs: "75vw", sm: "100%" }, p: 3 }}>
-            <Typography variant="h5" fontFamily="Caprasimo" mb={3}>
+        <Box sx={{ width: "100%", p: 3, boxSizing: "border-box" }}>
+            <Typography variant="h5" fontFamily="Caprasimo" mb={3} textTransform="uppercase">
                 Filtros
             </Typography>
 
-            <Typography variant="subtitle2" color="text.secondary" fontWeight="bold" textTransform="uppercase" mb={1}>
+            <Typography variant="subtitle2" color="text.secondary" fontWeight="900" textTransform="uppercase" mb={1}>
                 Marca
             </Typography>
             <Stack direction="row" flexWrap="wrap" gap={1} mb={4}>
                 <Chip 
                     label="Todas" 
                     onClick={() => setMarca("")} 
-                    color={marca === "" ? "primary" : "default"}
-                    variant={marca === "" ? "filled" : "outlined"}
-                    sx={{ fontWeight: "bold", borderRadius: "8px" }}
+                    sx={{ 
+                        fontWeight: "900", borderRadius: "8px", border: "2px solid #000",
+                        bgcolor: marca === "" ? "#D6FF00" : "#fff",
+                        boxShadow: marca === "" ? "4px 4px 0px #000" : "none",
+                        "&:hover": { bgcolor: "#D6FF00" }
+                    }}
                 />
                 {marcasDisponibles.map((m) => (
                     <Chip 
                         key={m} 
                         label={m} 
                         onClick={() => setMarca(m)} 
-                        color={marca === m ? "primary" : "default"}
-                        variant={marca === m ? "filled" : "outlined"}
-                        sx={{ fontWeight: "bold", borderRadius: "8px" }}
+                        sx={{ 
+                            fontWeight: "900", borderRadius: "8px", border: "2px solid #000",
+                            bgcolor: marca === m ? "#00E5FF" : "#fff",
+                            boxShadow: marca === m ? "4px 4px 0px #000" : "none",
+                            "&:hover": { bgcolor: "#00E5FF" }
+                        }}
                     />
                 ))}
             </Stack>
 
-            {/* <Typography variant="subtitle2" color="text.secondary" fontWeight="bold" textTransform="uppercase" mb={1}>
-                Sabor
-            </Typography>
-            <Stack direction="row" flexWrap="wrap" gap={1} mb={4}>
-                <Chip 
-                    label="Todos" 
-                    onClick={() => setSabor("")} 
-                    color={sabor === "" ? "secondary" : "default"}
-                    variant={sabor === "" ? "filled" : "outlined"}
-                    sx={{ fontWeight: "bold", borderRadius: "8px" }}
-                />
-                {saboresDisponibles.map((s) => (
-                    <Chip 
-                        key={s} 
-                        label={s} 
-                        onClick={() => setSabor(s)} 
-                        color={sabor === s ? "secondary" : "default"}
-                        variant={sabor === s ? "filled" : "outlined"}
-                        sx={{ fontWeight: "bold", borderRadius: "8px" }}
-                    />
-                ))}
-            </Stack> */}
-
             <Box sx={{ mb: 4 }}>
-                <Typography variant="subtitle2" color="text.secondary" fontWeight="bold" textTransform="uppercase" mb={1}>
+                <Typography variant="subtitle2" color="text.secondary" fontWeight="900" textTransform="uppercase" mb={1}>
                     Sabor
                 </Typography>
 
-                {/* 1. The Active Chips Display (Rendered OUTSIDE the text input) */}
                 <Stack direction="row" flexWrap="wrap" gap={1} mb={2}>
                     {saboresFiltrados.length > 0 ? (
                         saboresFiltrados.map((s) => (
@@ -164,22 +147,17 @@ const Catalogo = () => {
                                 key={s}
                                 label={s} 
                                 onDelete={() => setSaboresFiltrados(saboresFiltrados.filter(item => item !== s))} 
-                                color="secondary"
                                 sx={{ 
-                                    fontWeight: "bold", 
-                                    borderRadius: "8px",
-                                    border: "2px solid #000",
-                                    boxShadow: "2px 2px 0px #000",
-                                    "&:hover": { transform: "translate(-1px, -1px)", boxShadow: "3px 3px 0px #000" }
+                                    fontWeight: "900", borderRadius: "8px", border: "2px solid #000",
+                                    bgcolor: "#FF3366", color: "#fff", boxShadow: "4px 4px 0px #000",
+                                    "& .MuiChip-deleteIcon": { color: "#fff" }
                                 }}
                             />
                         ))
                     ) : (
                         <Chip 
                             label="Todos los sabores" 
-                            color="default"
-                            variant="outlined"
-                            sx={{ fontWeight: "bold", borderRadius: "8px", border: "2px solid #000" }}
+                            sx={{ fontWeight: "900", borderRadius: "8px", border: "2px solid #000", bgcolor: "#fff" }}
                         />
                     )}
                 </Stack>
@@ -188,28 +166,21 @@ const Catalogo = () => {
                     multiple
                     options={saboresDisponibles.filter(s => !saboresFiltrados.includes(s))}
                     value={saboresFiltrados}
-                    onChange={(event, newValue) => {
-                        setSaboresFiltrados(newValue);
-                    }}
+                    onChange={(event, newValue) => setSaboresFiltrados(newValue)}
                     renderTags={() => null}
                     renderInput={(params) => (
                         <TextField 
                             {...params} 
-                            placeholder="Buscar o agregar sabor..." 
+                            placeholder="Buscar sabor..." 
                             variant="outlined"
                             sx={{
+                                // Changed width to 100%
+                                width: "100%",
                                 "& .MuiOutlinedInput-root": {
-                                    borderRadius: "8px",
-                                    border: "2px solid #000",
-                                    boxShadow: "4px 4px 0px #000",
-                                    fontWeight: "bold",
-                                    backgroundColor: "#fff",
-                                    transition: "all 0.2s ease",
-                                    width: "75%",
-                                    "&:hover": {
-                                        transform: "translate(-2px, -2px)",
-                                        boxShadow: "6px 6px 0px #000",
-                                    },
+                                    borderRadius: "8px", border: "3px solid #000",
+                                    boxShadow: "4px 4px 0px #000", fontWeight: "900",
+                                    backgroundColor: "#fff", transition: "all 0.2s ease",
+                                    "&:hover": { transform: "translate(-2px, -2px)", boxShadow: "6px 6px 0px #000" },
                                     "& fieldset": { border: "none" }
                                 }
                             }}
@@ -218,8 +189,8 @@ const Catalogo = () => {
                 />
             </Box>
 
-            <Box sx={{ mb: 2, width: "75%" }}>
-                <Typography variant="subtitle2" color="text.secondary" fontWeight="bold" textTransform="uppercase" mb={2}>
+            <Box sx={{ mb: 4, width: "100%" }}>
+                <Typography variant="subtitle2" color="text.secondary" fontWeight="900" textTransform="uppercase" mb={2}>
                     Rango de Precio
                 </Typography>
                 <Slider
@@ -228,31 +199,29 @@ const Catalogo = () => {
                     valueLabelDisplay="auto"
                     min={0}
                     max={2000}
-                    sx={{ color: "#000" }}
+                    sx={{ 
+                        color: "#000",
+                        "& .MuiSlider-thumb": { border: "3px solid #000", bgcolor: "#D6FF00", width: 24, height: 24 },
+                        "& .MuiSlider-track": { border: "2px solid #000", bgcolor: "#000" },
+                        "& .MuiSlider-rail": { border: "2px solid #000", bgcolor: "#fff" }
+                    }}
                 />
                 <Stack direction="row" justifyContent="space-between">
-                    <Typography variant="body2" fontWeight="bold" sx={{ color: "#000" }}>${precio[0]}</Typography>
-                    <Typography variant="body2" fontWeight="bold" sx={{ color: "#000" }}>${precio[1]}</Typography>
+                    <Typography variant="h6" fontWeight="900" fontFamily="Caprasimo">${precio[0]}</Typography>
+                    <Typography variant="h6" fontWeight="900" fontFamily="Caprasimo">${precio[1]}</Typography>
                 </Stack>
             </Box>
 
             <Button 
-                variant="contained" 
+                fullWidth 
                 onClick={resetFilters}
                 sx={{ 
-                    width: "75%",
-                    mt: 2, 
-                    bgcolor: "#000", 
-                    color: "#fff", 
-                    borderRadius: "8px", 
-                    py: 1.5, 
-                    fontWeight: "bold", 
-                    '&:hover': { 
-                        bgcolor: "#333" 
-                    } 
+                    bgcolor: "#000", color: "#fff", borderRadius: "8px", border: "3px solid #000",
+                    py: 1.5, fontWeight: "900", fontSize: "1.1rem", transition: "all 0.2s",
+                    '&:hover': { bgcolor: "#FF3366", transform: "translate(-2px, -2px)", boxShadow: "4px 4px 0px #000" } 
                 }}
             >
-                Limpiar Filtros
+                LIMPIAR FILTROS
             </Button>
         </Box>
     );
@@ -260,17 +229,17 @@ const Catalogo = () => {
     const activeChips = [
         marca && {
             label: `Marca: ${marca}`,
-            color: "#C2A61D",
+            color: "#D6FF00",
             onDelete: () => setMarca(null)
         },
         saboresFiltrados?.length > 0 && {
             label: `Sabor: ${saboresFiltrados}`,
-            color: "#B0D0FF",
+            color: "#00E5FF",
             onDelete: () => setSaboresFiltrados([])
         },
         isPriceChanged && {
             label: `Precio: $${precio[0]} - $${precio[1]}`,
-            color: "#ED5528",
+            color: "#FF3366",
             onDelete: () => setPrecio(initialPrecio)
         }
     ].filter(Boolean);
@@ -308,8 +277,6 @@ const Catalogo = () => {
                 bgcolor: "#f4f5f7"
             }}
         >
-        {/* FILTROS */}
-            {/* Tablets & Laptops */}
             <Box
                 sx={{
                     display: { xs: "none", sm: "block" },
@@ -325,12 +292,19 @@ const Catalogo = () => {
                 {SidebarContent}
             </Box>
 
-            {/* Celulares */}
-            <Drawer anchor="left" open={mobileOpen} onClose={toggleDrawer}>
+            <Drawer 
+                anchor="left" 
+                open={mobileOpen} 
+                onClose={toggleDrawer} sx={{
+                    "& .MuiDrawer-paper": { 
+                        width: "300px", 
+                        borderRight: "4px solid #000" 
+                    }
+                }}
+            >
                 {SidebarContent}
             </Drawer>
 
-        {/* PRODUCTOS */}
             <Box 
                 sx={{ 
                     flexGrow: 1,
@@ -338,32 +312,48 @@ const Catalogo = () => {
                     ml: {xs: 0, sm: 2}
                 }}
             >
-                {/* Botón filtro móvil */}
                 <Stack justifyContent={"space-between"} direction={"row"} sx={{ display: { xs: "flex", sm: "none" }, mb: 2, width:"100%" }}>
-                    <Stack spacing={1} direction="row" flexWrap="wrap" alignContent={"center"}>
+                    <Stack direction="row" flexWrap="wrap" alignItems="center">
                         {activeChips.map((chip, index) => (
                             <Chip
                                 key={index}
                                 label={chip.label}
                                 onDelete={chip.onDelete}
-                                size="small"
-                                variant="contained"
-                                sx={{ mr: 1, mb: 1, backgroundColor: chip.color, color: "#fff" }}
+                                sx={{ 
+                                    mr: 2, 
+                                    mb: 2, 
+                                    backgroundColor: chip.color, 
+                                    color: "#000",
+                                    fontWeight: "900",
+                                    fontSize: "0.85rem",
+                                    border: "3px solid #000",
+                                    borderRadius: "8px",
+                                    boxShadow: "4px 4px 0px #000",
+                                    "& .MuiChip-deleteIcon": {
+                                        color: "rgba(0,0,0,0.6)",
+                                        transition: "color 0.2s",
+                                        "&:hover": { color: "#000" }
+                                    }
+                                }}
                             />
                         ))}
                     </Stack>
-                    <Box sx={{ display: { xs: "flex", sm: "none" }, justifyContent: "flex-end"}}>
+                    <Box sx={{ display: { xs: "flex", sm: "none" }, justifyContent: "flex-end", width: "100%", mb: 2 }}>
                         <Button
-                            variant="outlined"
                             startIcon={<FilterListIcon />}
                             onClick={toggleDrawer}
+                            sx={{
+                                bgcolor: "#D6FF00", color: "#000", fontWeight: "900",
+                                border: "3px solid #000", borderRadius: "8px",
+                                boxShadow: "4px 4px 0px #000",
+                                "&:hover": { bgcolor: "#c2e600" }
+                            }}
                         >
-                            Filtros
+                            FILTROS
                         </Button>
                     </Box>
                 </Stack>
 
-                {/* Productos */}
                 {marcasFiltradas.map((m) => {
                     const productosDeMarca = productosFiltrados.filter((p) => p.marca === m);
                     const dynamicColor = brandColorMap[m] || "#000000";

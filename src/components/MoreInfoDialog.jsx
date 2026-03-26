@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Stack, TextField, Typography } from "@mui/material";
-import { useCartStoreAddToCart } from "../stores/useCartStore";
+import { useCartStoreAddToCart, useCartStoreData } from "../stores/useCartStore";
 import ProductCarousel from "./ProductCarousel";
 import CustomSelect from "./CustomSelect";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -17,15 +17,31 @@ const MoreInfoDialog = ({
             cantidad: "",
         }];
     const addToCart = useCartStoreAddToCart();
+    const cart = useCartStoreData();
 
     const [saboresSeleccionados, setSaboresSeleccionados] = useState(initialStateSabores);
 
     const handleAddToCart = () => {
         const saboresIncorrectos = saboresSeleccionados.filter(c => c.cantidad <= 0 || !c.nombre)
-
         if (saboresIncorrectos.length > 0) {
             notify.warning("Selecciona al menos un sabor con cantidad")
             return;
+        }
+
+        for (let saborDeseado of saboresSeleccionados) {
+            const saborDB = productoSeleccionado.sabores.find(s => s.nombre === saborDeseado.nombre);
+            const stockDisponible = saborDB ? Number(saborDB.cantidad) : 0;
+
+            const itemEnCarrito = cart.find(item => item.id === (productoSeleccionado._id || productoSeleccionado.id));
+            const saborEnCarrito = itemEnCarrito?.sabores.find(s => s.nombre === saborDeseado.nombre);
+            const cantidadYaEnCarrito = saborEnCarrito ? Number(saborEnCarrito.cantidad) : 0;
+
+            const totalIntentado = Number(saborDeseado.cantidad) + cantidadYaEnCarrito;
+
+            if (totalIntentado > stockDisponible) {
+                notify.error(`Solo quedan ${stockDisponible} unidades de ${saborDeseado.nombre}. (Ya tienes ${cantidadYaEnCarrito} en tu carrito).`);
+                return;
+            }
         }
 
         const itemCarrito = {

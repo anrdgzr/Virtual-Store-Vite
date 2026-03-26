@@ -4,6 +4,7 @@ import { api } from "../../network/api";
 import { Link, useNavigate } from "react-router-dom";
 import { notify } from "../../utils/notify";
 import { GoogleLogin } from "@react-oauth/google";
+import TextFieldCustom from "../../components/TextFieldCustom";
 import.meta.env.VITE_API_URL;
 
 const Login = () => {
@@ -55,17 +56,6 @@ const Login = () => {
         }
     };
 
-    const brutalistInput = {
-        "& .MuiOutlinedInput-root": {
-            borderRadius: "8px",
-            border: "2px solid #000",
-            backgroundColor: "#fff",
-            "& fieldset": { border: "none" },
-            "&.Mui-focused": { boxShadow: "4px 4px 0px #000", transform: "translate(-2px, -2px)" },
-            transition: "all 0.2s"
-        }
-    };
-
     return (
         <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh" p={2}>
             <Box 
@@ -79,7 +69,7 @@ const Login = () => {
                     boxShadow: "10px 10px 0px #000"
                 }}
             >
-                <Typography variant="h3" fontFamily="Caprasimo" textAlign="center" mb={1} sx={{ textTransform: "uppercase" }}>
+                <Typography variant="h3" fontFamily="Caprasimo" textAlign="center" mb={1} sx={{ textTransform: "uppercase", color: "#20de07", fontWeight: "bold" }}>
                     Entrar
                 </Typography>
                 <Typography variant="body1" textAlign="center" color="text.secondary" fontWeight="bold" mb={2}>
@@ -103,23 +93,20 @@ const Login = () => {
                 </Divider>
 
                 <form onSubmit={handleSubmit}>
-                    <Stack spacing={2}>
-                        <TextField
-                            fullWidth
+                    <Stack spacing={3}>
+                        <TextFieldCustom
                             label="Correo electrónico"
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            sx={brutalistInput}
                             required
                         />
-                        <TextField
-                            fullWidth
+                        
+                        <TextFieldCustom
                             label="Contraseña"
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            sx={brutalistInput}
                             required
                         />
                         
@@ -147,7 +134,7 @@ const Login = () => {
                     </Stack>
                 </form>
 
-                <Typography textAlign="center" mt={3} fontWeight="bold">
+                <Typography textAlign="center" mt={3} fontWeight="bold" color="text.secondary">
                     ¿No tienes cuenta? 
                     <Box 
                         component="span" 

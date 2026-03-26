@@ -21,7 +21,8 @@ const CardComponent = ({
     return(
         <Card
             sx={{
-                maxWidth: 345,
+                maxWidth: 280,//345,
+                width: "200px",
                 margin: "auto",
                 borderRadius: "12px",
                 boxShadow: "6px 6px 0px #000",
@@ -36,7 +37,6 @@ const CardComponent = ({
                 justifyContent: "space-between",
                 backgroundColor: "#fff",
                 border: "3px solid #000",
-                width: 200,
                 height: 300 + (
                     isLargetitle 
                         ? isHome

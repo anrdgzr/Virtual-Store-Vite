@@ -216,7 +216,7 @@ const AdminProductCard = ({ producto, refreshProducts }) => {
 
                         <Button variant="contained" component="label" startIcon={<PhotoLibraryIcon />} sx={{ bgcolor: "#000", color: "#fff", fontWeight: "bold" }}>
                             SUBIR NUEVAS IMÁGENES
-                            <input type="file" hidden multiple accept="image/*" onChange={(e) => setNewImages(e.target.files)} />
+                            <input type="file" hidden multiple accept="image/*" onChange={handleAddNewImages} />
                         </Button>
 
                     </Stack>
